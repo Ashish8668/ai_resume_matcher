@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Matcher</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Resume Matcher</h1>
+            <p class="subtitle">AI-Powered Job Matching</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="section" id="uploadSection">
+            <h2>📄 Resume</h2>
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="resumeFile" accept=".pdf" style="display: none;">
+                <button class="btn btn-primary" id="uploadBtn">
+                    📤 Upload Resume PDF
+                </button>
+                <p class="upload-status" id="uploadStatus"></p>
+            </div>
+        </div>
+
+        <!-- Match Section -->
+        <div class="section" id="matchSection" style="display: none;">
+            <h2>🔍 Last Match Results</h2>
+            <div id="matchResults">
+                <!-- Results will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState" style="display: none;">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error" id="errorState" style="display: none;">
+            <p id="errorMessage"></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Go to LinkedIn job page and click "Match Resume"</p>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

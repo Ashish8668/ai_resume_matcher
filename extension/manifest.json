@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "AI Resume Matcher",
+  "version": "1.0.0",
+  "description": "Match your resume with LinkedIn job postings using AI",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "http://localhost:5000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_title": "AI Resume Matcher"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/jobs/*",
+        "https://linkedin.com/jobs/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["utils/*.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
