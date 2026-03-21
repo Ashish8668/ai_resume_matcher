@@ -86,7 +86,7 @@ This file documents the complete architecture, data flow, and technology usage o
 2. Frontend calls `GET /api/dashboard/analytics`.
 3. Backend compiles:
 - Resume stats (words, sentences, read time)
-- Resume chunking previews
+- Resume chunking previews (section-based by headings like Education/Experience/Projects with fallback)
 - Latest analysis session details
 4. Response renders analysis telemetry for debugging and tracking.
 
