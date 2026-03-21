@@ -9,7 +9,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     width: 400px;
     min-height: 500px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
     color: #333;
 }
 
@@ -22,7 +22,7 @@ body {
 
 /* Header */
 .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
     color: white;
     padding: 20px;
     text-align: center;
@@ -73,13 +73,13 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
     color: white;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(10, 102, 194, 0.4);
 }
 
 .btn-primary:active {
@@ -118,7 +118,7 @@ body {
 .score-value {
     font-size: 48px;
     font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -176,7 +176,7 @@ body {
     padding: 10px;
     margin-bottom: 8px;
     background: #f9fafb;
-    border-left: 3px solid #667eea;
+    border-left: 3px solid #0a66c2;
     border-radius: 4px;
     font-size: 13px;
     line-height: 1.5;
@@ -193,7 +193,7 @@ body {
 .project-title {
     font-size: 14px;
     font-weight: 600;
-    color: #667eea;
+    color: #0a66c2;
     margin-bottom: 8px;
 }
 
@@ -220,8 +220,8 @@ body {
 
 .project-skill {
     padding: 4px 8px;
-    background: #e0e7ff;
-    color: #4338ca;
+    background: #dbeafe;
+    color: #004182;
     border-radius: 12px;
     font-size: 11px;
 }
@@ -236,7 +236,7 @@ body {
     width: 40px;
     height: 40px;
     border: 4px solid #f3f4f6;
-    border-top-color: #667eea;
+    border-top-color: #0a66c2;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 15px;
@@ -287,3 +287,4 @@ body {
     font-size: 14px;
     margin-top: 10px;
 }
+

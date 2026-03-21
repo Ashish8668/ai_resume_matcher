@@ -31,6 +31,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     return true; // Async response
   }
+
+  if (request.action === 'openResultsPopup') {
+    (async () => {
+      try {
+        await chrome.windows.create({
+          url: chrome.runtime.getURL('popup/index.html'),
+          type: 'popup',
+          width: 430,
+          height: 760,
+          focused: true,
+        });
+        sendResponse({ success: true });
+      } catch (error) {
+        sendResponse({ success: false, error: error.message });
+      }
+    })();
+    return true;
+  }
   
   return false;
 });

@@ -189,7 +189,7 @@ function injectMatchButton() {
     display: inline-block;
     visibility: visible !important;
     opacity: 1 !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: linear-gradient(135deg, #0a66c2 0%, #004182 100%) !important;
     color: white !important;
     border: none !important;
     padding: 12px 24px !important;
@@ -201,7 +201,7 @@ function injectMatchButton() {
   // Add hover effect
   button.addEventListener('mouseenter', () => {
     button.style.transform = 'translateY(-2px)';
-    button.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+    button.style.boxShadow = '0 4px 12px rgba(10, 102, 194, 0.4)';
   });
   button.addEventListener('mouseleave', () => {
     button.style.transform = 'translateY(0)';
@@ -246,14 +246,18 @@ function injectMatchButton() {
         }
         
         if (response && response.success) {
-          // Store result and open popup
+          // Store result and auto-open results window
           chrome.storage.local.set({ lastMatchResult: response.result }, () => {
             if (chrome.runtime.lastError) {
               console.error('Storage error:', chrome.runtime.lastError);
             }
-            // Try to open popup, but don't fail if it doesn't work
-            chrome.action.openPopup().catch(() => {
-              alert('✅ Match complete! Click the extension icon to view results.');
+            chrome.runtime.sendMessage({ action: 'openResultsPopup' }, (openResp) => {
+              if (chrome.runtime.lastError || !openResp?.success) {
+                // Fallback to default popup API
+                chrome.action.openPopup().catch(() => {
+                  alert('Match complete! Click the extension icon to view results.');
+                });
+              }
             });
           });
         } else {
@@ -419,3 +423,4 @@ if (document.readyState === 'complete') {
 } else {
   window.addEventListener('load', initContentScript);
 }
+
