@@ -1,38 +1,46 @@
 /**
- * MongoDB connection configuration
+ * Firestore connection configuration
  */
-const mongoose = require('mongoose');
-const { MONGODB_URI } = require('./env');
+const admin = require('firebase-admin');
+const {
+  FIREBASE_PROJECT_ID,
+  FIREBASE_CLIENT_EMAIL,
+  FIREBASE_PRIVATE_KEY,
+} = require('./env');
+
+let firestore = null;
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    
-    console.log(`✅ MongoDB connected: ${conn.connection.host}`);
-    
-    // Handle connection events
-    mongoose.connection.on('error', (err) => {
-      console.error('❌ MongoDB connection error:', err);
-    });
-    
-    mongoose.connection.on('disconnected', () => {
-      console.warn('⚠️  MongoDB disconnected');
-    });
-    
-    // Graceful shutdown
-    process.on('SIGINT', async () => {
-      await mongoose.connection.close();
-      console.log('MongoDB connection closed through app termination');
-      process.exit(0);
-    });
-    
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: FIREBASE_PROJECT_ID,
+          clientEmail: FIREBASE_CLIENT_EMAIL,
+          privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        }),
+        projectId: FIREBASE_PROJECT_ID,
+      });
+    }
+
+    firestore = admin.firestore();
+    firestore.settings({ ignoreUndefinedProperties: true });
+    console.log(`Firestore connected: ${FIREBASE_PROJECT_ID}`);
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
+    console.error('Firestore connection error:', error.message);
     process.exit(1);
   }
 };
 
+const getFirestore = () => {
+  if (!firestore) {
+    throw new Error('Firestore is not initialized. Call connectDB() first.');
+  }
+  return firestore;
+};
+
+const serverTimestamp = () => admin.firestore.FieldValue.serverTimestamp();
+
 module.exports = connectDB;
+module.exports.getFirestore = getFirestore;
+module.exports.serverTimestamp = serverTimestamp;

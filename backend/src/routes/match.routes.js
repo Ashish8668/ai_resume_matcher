@@ -4,8 +4,8 @@
  */
 const express = require('express');
 const router = express.Router();
-const Resume = require('../models/Resume');
-const AnalysisSession = require('../models/AnalysisSession');
+const { getActiveResume } = require('../repositories/resumeRepository');
+const { createAnalysisSession } = require('../repositories/analysisRepository');
 const { summarizeText } = require('../utils/textAnalytics');
 const { performance } = require('perf_hooks');
 const {
@@ -22,7 +22,6 @@ const {
 router.post('/', async (req, res) => {
   try {
     const processStart = performance.now();
-    const uuid = req.userUUID;
     const { jobTitle, companyName, jobDescription } = req.body;
     
     // Validate required fields
@@ -35,7 +34,7 @@ router.post('/', async (req, res) => {
     }
     
     // Get resume text
-    const resume = await Resume.findOne({ uuid });
+    const resume = await getActiveResume();
     
     if (!resume) {
       return res.status(404).json({
@@ -131,8 +130,7 @@ router.post('/', async (req, res) => {
 
     // Save analysis telemetry for dashboard
     try {
-      await AnalysisSession.create({
-        uuid,
+      await createAnalysisSession({
         jobTitle: jobTitle || '',
         companyName: companyName || '',
         jobDescriptionPreview: summarizeText(jobDescription, 90),

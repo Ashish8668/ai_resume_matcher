@@ -6,9 +6,8 @@ const logger = (req, res, next) => {
   
   res.on('finish', () => {
     const duration = Date.now() - start;
-    const uuid = req.headers['x-user-uuid'] || 'no-uuid';
     console.log(
-      `${req.method} ${req.path} - ${res.statusCode} - ${duration}ms - UUID: ${uuid.substring(0, 8)}...`
+      `${req.method} ${req.path} - ${res.statusCode} - ${duration}ms`
     );
   });
   

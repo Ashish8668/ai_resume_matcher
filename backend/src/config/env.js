@@ -4,7 +4,9 @@
 require('dotenv').config();
 
 const requiredEnvVars = [
-  'MONGODB_URI',
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_CLIENT_EMAIL',
+  'FIREBASE_PRIVATE_KEY',
   'AI_ENGINE_URL'
 ];
 
@@ -24,8 +26,9 @@ module.exports = {
   validateEnv,
   PORT: process.env.PORT || 5000,
   NODE_ENV: process.env.NODE_ENV || 'development',
-  MONGODB_URI: process.env.MONGODB_URI,
+  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+  FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
+  FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,
   AI_ENGINE_URL: process.env.AI_ENGINE_URL || 'http://localhost:8000',
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
-  UUID_VALIDATION_ENABLED: process.env.UUID_VALIDATION_ENABLED !== 'false',
 };

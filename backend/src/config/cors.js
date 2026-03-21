@@ -25,9 +25,9 @@ const corsOptions = {
       callback(null, false); // Return false instead of Error to avoid throwing
     }
   },
-  credentials: false, // No cookies/auth needed
+  credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'X-User-UUID'],
+  allowedHeaders: ['Content-Type'],
   exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'],
   maxAge: 86400, // 24 hours
 };

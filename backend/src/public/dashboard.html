@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Analysis Dashboard</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --surface: #ffffff;
+        --text: #1f2a37;
+        --muted: #6b7280;
+        --line: #dbe3ee;
+        --brand: #0f766e;
+        --brand-soft: #ccfbf1;
+        --accent: #0369a1;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+        background: radial-gradient(circle at top right, #dff7f2, var(--bg) 40%);
+        color: var(--text);
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 22px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+      }
+      p { margin: 0; color: var(--muted); }
+      .controls {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: auto;
+        justify-content: start;
+        gap: 10px;
+      }
+      input, button {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 11px 12px;
+        font-size: 0.95rem;
+      }
+      button {
+        background: var(--brand);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button:hover { filter: brightness(1.05); }
+      .status {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .section {
+        margin-top: 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .section h2 {
+        margin: 0 0 10px;
+        font-size: 1.1rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: #fcfdff;
+      }
+      .metric .label {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .metric .value {
+        margin-top: 6px;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .preview {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: #fcfdff;
+        line-height: 1.45;
+      }
+      .bars {
+        display: grid;
+        gap: 9px;
+      }
+      .bar-item {
+        display: grid;
+        grid-template-columns: 140px 1fr 80px;
+        align-items: center;
+        gap: 10px;
+      }
+      .track {
+        height: 10px;
+        border-radius: 999px;
+        background: #e8eef6;
+        overflow: hidden;
+      }
+      .fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--brand));
+      }
+      .table-wrap {
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 680px;
+      }
+      th, td {
+        border-bottom: 1px solid var(--line);
+        padding: 9px 10px;
+        text-align: left;
+        font-size: 0.9rem;
+      }
+      th { background: #f8fafc; }
+      .pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pill {
+        background: var(--brand-soft);
+        border: 1px solid #99f6e4;
+        color: #0f766e;
+        border-radius: 999px;
+        padding: 4px 9px;
+        font-size: 0.82rem;
+      }
+      .pill.alt {
+        background: #e0f2fe;
+        border-color: #bae6fd;
+        color: #0c4a6e;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      @media (max-width: 820px) {
+        .controls { grid-template-columns: 1fr; }
+        .two-col { grid-template-columns: 1fr; }
+        .bar-item { grid-template-columns: 110px 1fr 70px; font-size: 0.85rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Resume Analysis Dashboard</h1>
+      <p>Track upload summary, chunking, pipeline stage timings, and the latest analysis output.</p>
+
+      <div class="controls">
+        <button id="loadBtn">Load Dashboard</button>
+      </div>
+      <div id="status" class="status">Ready</div>
+
+      <div id="content" style="display: none;">
+        <section class="section">
+          <h2>Resume Summary</h2>
+          <div id="summaryMetrics" class="grid"></div>
+          <div id="resumePreview" class="preview" style="margin-top: 10px;"></div>
+        </section>
+
+        <section class="section">
+          <h2>Chunking</h2>
+          <div id="chunkMeta" class="status" style="margin-top: 0; margin-bottom: 10px;"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Word Range</th>
+                  <th>Words</th>
+                  <th>Chars</th>
+                  <th>Preview</th>
+                </tr>
+              </thead>
+              <tbody id="chunkRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Latest Analysis Run</h2>
+          <div id="analysisMeta" class="status" style="margin-top: 0;"></div>
+          <div id="stageBars" class="bars" style="margin-top: 10px;"></div>
+        </section>
+
+        <section class="section">
+          <h2>Match Insights</h2>
+          <div id="matchMetrics" class="grid"></div>
+          <div class="two-col" style="margin-top: 12px;">
+            <div>
+              <h3>Matched Skills</h3>
+              <div id="matchedSkills" class="pill-list"></div>
+            </div>
+            <div>
+              <h3>Missing Skills</h3>
+              <div id="missingSkills" class="pill-list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const statusEl = document.getElementById('status');
+      const contentEl = document.getElementById('content');
+      const loadBtnEl = document.getElementById('loadBtn');
+      const summaryMetricsEl = document.getElementById('summaryMetrics');
+      const resumePreviewEl = document.getElementById('resumePreview');
+      const chunkMetaEl = document.getElementById('chunkMeta');
+      const chunkRowsEl = document.getElementById('chunkRows');
+      const analysisMetaEl = document.getElementById('analysisMeta');
+      const stageBarsEl = document.getElementById('stageBars');
+      const matchMetricsEl = document.getElementById('matchMetrics');
+      const matchedSkillsEl = document.getElementById('matchedSkills');
+      const missingSkillsEl = document.getElementById('missingSkills');
+      const renderMetricCards = (target, metrics) => {
+        target.innerHTML = metrics
+          .map((item) =>
+            `<div class="metric"><div class="label">${item.label}</div><div class="value">${item.value}</div></div>`
+          )
+          .join('');
+      };
+
+      const toDate = (raw) => (raw ? new Date(raw).toLocaleString() : '-');
+
+      const renderPills = (target, items, alt = false) => {
+        if (!items || !items.length) {
+          target.innerHTML = '<span class="status">No items</span>';
+          return;
+        }
+        target.innerHTML = items
+          .map((item) => {
+            const label = typeof item === 'string' ? item : item.skill;
+            const cls = alt ? 'pill alt' : 'pill';
+            return `<span class="${cls}">${label}</span>`;
+          })
+          .join('');
+      };
+
+      const renderDashboard = (data) => {
+        const dashboard = data.dashboard;
+        const stats = dashboard.resume.textStats;
+        const analysis = dashboard.latestAnalysis;
+
+        renderMetricCards(summaryMetricsEl, [
+          { label: 'Words', value: stats.words },
+          { label: 'Characters', value: stats.chars },
+          { label: 'Sentences', value: stats.sentences },
+          { label: 'Lines', value: stats.lines },
+          { label: 'Avg words/sentence', value: stats.avgWordsPerSentence },
+          { label: 'Read time (min)', value: stats.estimatedReadTimeMinutes },
+        ]);
+
+        resumePreviewEl.textContent = dashboard.resume.preview || 'No preview';
+
+        const chunking = dashboard.chunking;
+        chunkMetaEl.textContent = `Chunk size: ${chunking.chunkSizeWords} words | Overlap: ${chunking.overlapWords} words | Total chunks: ${chunking.chunkCount}`;
+        chunkRowsEl.innerHTML = chunking.chunks
+          .map((chunk) =>
+            `<tr>
+              <td>${chunk.index}</td>
+              <td>${chunk.startWord}-${chunk.endWord}</td>
+              <td>${chunk.wordCount}</td>
+              <td>${chunk.charCount}</td>
+              <td>${chunk.preview}</td>
+            </tr>`
+          )
+          .join('');
+
+        if (!analysis) {
+          analysisMetaEl.textContent = 'No analysis run found yet. Trigger /api/match once after uploading a resume.';
+          stageBarsEl.innerHTML = '';
+          renderMetricCards(matchMetricsEl, [
+            { label: 'ATS Score', value: '-' },
+            { label: 'Similarity', value: '-' },
+            { label: 'Gap Score', value: '-' },
+            { label: 'Project Ideas', value: '-' },
+          ]);
+          renderPills(matchedSkillsEl, []);
+          renderPills(missingSkillsEl, [], true);
+          return;
+        }
+
+        analysisMetaEl.textContent = `Last run: ${toDate(analysis.createdAt)} | Job: ${analysis.jobTitle || 'Untitled'} | Company: ${analysis.companyName || '-'} | Total: ${analysis.totalDurationMs} ms`;
+
+        const maxStageTime = Math.max(...analysis.stages.map((s) => s.durationMs), 1);
+        stageBarsEl.innerHTML = analysis.stages
+          .map((stage) => {
+            const width = Math.max(3, Math.round((stage.durationMs / maxStageTime) * 100));
+            return `<div class="bar-item">
+              <span>${stage.name}</span>
+              <div class="track"><div class="fill" style="width:${width}%"></div></div>
+              <strong>${stage.durationMs} ms</strong>
+            </div>`;
+          })
+          .join('');
+
+        const result = analysis.resultSnapshot || {};
+        renderMetricCards(matchMetricsEl, [
+          { label: 'ATS Score', value: result.atsScore ?? '-' },
+          { label: 'Similarity', value: result.similarityScore ?? '-' },
+          { label: 'Gap Score', value: result.missingSkills ? (result.missingSkills.length / Math.max((result.missingSkills.length + (result.matchedSkills || []).length), 1)).toFixed(2) : '-' },
+          { label: 'Project Ideas', value: (result.projectIdeas || []).length },
+        ]);
+
+        renderPills(matchedSkillsEl, result.matchedSkills || []);
+        renderPills(missingSkillsEl, result.missingSkills || [], true);
+      };
+
+      const loadDashboard = async () => {
+        statusEl.textContent = 'Loading analytics...';
+        contentEl.style.display = 'none';
+
+        try {
+          const response = await fetch('/api/dashboard/analytics');
+          const data = await response.json();
+          if (!response.ok || !data.success) {
+            throw new Error(data.error || 'Failed to fetch dashboard');
+          }
+          renderDashboard(data);
+          contentEl.style.display = 'block';
+          statusEl.textContent = 'Dashboard loaded';
+        } catch (error) {
+          statusEl.textContent = error.message;
+        }
+      };
+
+      loadBtnEl.addEventListener('click', loadDashboard);
+      loadDashboard();
+    </script>
+  </body>
+</html>

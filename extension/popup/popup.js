@@ -3,41 +3,6 @@
  * Handles resume upload and displays match results
  */
 
-// UUID generation (inline)
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-
-// Get or create UUID
-async function getOrCreateUUID() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(['userUUID'], (result) => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-        return;
-      }
-      
-      if (result.userUUID) {
-        resolve(result.userUUID);
-        return;
-      }
-      
-      const newUUID = generateUUID();
-      chrome.storage.local.set({ userUUID: newUUID }, () => {
-        if (chrome.runtime.lastError) {
-          reject(new Error(chrome.runtime.lastError.message));
-          return;
-        }
-        resolve(newUUID);
-      });
-    });
-  });
-}
-
 // API Base URL
 const API_BASE_URL = 'http://localhost:5000';
 
@@ -54,13 +19,6 @@ const errorMessage = document.getElementById('errorMessage');
 
 // Initialize popup
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize UUID
-  try {
-    await getOrCreateUUID();
-  } catch (error) {
-    console.error('Failed to initialize UUID:', error);
-  }
-  
   // Check if resume exists
   await checkResumeStatus();
   
@@ -78,12 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Check resume status
 async function checkResumeStatus() {
   try {
-    const uuid = await getOrCreateUUID();
-    const response = await fetch(`${API_BASE_URL}/api/resume`, {
-      headers: {
-        'X-User-UUID': uuid,
-      },
-    });
+    const response = await fetch(`${API_BASE_URL}/api/resume`);
     
     if (response.ok) {
       const data = await response.json();
@@ -120,15 +73,11 @@ async function handleFileUpload(event) {
   showLoading();
   
   try {
-    const uuid = await getOrCreateUUID();
     const formData = new FormData();
     formData.append('resume', file);
     
     const response = await fetch(`${API_BASE_URL}/api/resume/upload`, {
       method: 'POST',
-      headers: {
-        'X-User-UUID': uuid,
-      },
       body: formData,
     });
     

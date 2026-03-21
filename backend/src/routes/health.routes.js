@@ -7,7 +7,7 @@ const { checkAIHealth } = require('../services/aiService');
 
 /**
  * GET /health
- * Health check endpoint (no UUID required)
+ * Health check endpoint
  */
 router.get('/', async (req, res) => {
   try {
