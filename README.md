@@ -1,42 +1,23 @@
 # AI Resume Matcher
 
-AI-powered resume matching for LinkedIn job posts using a Chrome extension, an Express backend, and a FastAPI AI engine.
+This repository contains a Chrome extension and an Express backend API with Groq-powered AI processing.
 
-## Features
+## Prerequisites
 
-- PDF resume upload with text-only storage
-- Resume/job similarity scoring
-- Skill extraction and gap analysis
-- Resume improvement suggestions and project ideas
-- Dashboard for resume stats, chunking, stage timings, and latest analysis
-- Firestore-backed backend storage
+- Node.js 18+
+- npm
+- Firebase service account credentials
+- Groq API key
+- Google Chrome (for extension)
 
-## Architecture
-
-```text
-Chrome Extension
-   -> Express Backend
-   -> FastAPI AI Engine
-   -> Firestore
-```
-
-## Current Flow
-
-- The app keeps one active resume in the backend.
-- The extension uploads that resume and requests job matching.
-- The dashboard reads the latest stored resume and latest analysis session.
-
-## Run Locally
-
-### Backend
+## Setup
 
 ```bash
 cd backend
 npm install
-npm run dev
 ```
 
-Required backend `.env`:
+Create `backend/.env` with:
 
 ```env
 PORT=5000
@@ -44,29 +25,35 @@ NODE_ENV=development
 FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_CLIENT_EMAIL=your-service-account-email
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-AI_ENGINE_URL=http://localhost:8000
+GROQ_API_KEY=your-groq-api-key
+GROQ_MODEL=llama-3.3-70b-versatile
 ALLOWED_ORIGINS=http://localhost:3000
 ```
 
-### AI Engine
+## Run
+
+Development:
 
 ```bash
-cd ai-engine
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python -m spacy download en_core_web_sm
-python -m app.main
+cd backend
+npm run dev
 ```
 
-### Chrome Extension
+Production:
+
+```bash
+cd backend
+npm start
+```
+
+## Chrome Extension Setup
 
 1. Open `chrome://extensions/`
 2. Enable Developer mode
-3. Click Load unpacked
+3. Click `Load unpacked`
 4. Select the `extension` folder
 
-## Useful Endpoints
+## Important Backend Endpoints
 
 - `GET /health`
 - `POST /api/resume/upload`
@@ -75,9 +62,18 @@ python -m app.main
 - `GET /dashboard`
 - `GET /api/dashboard/analytics`
 
-## Testing
+## Quick Check Commands
+
+Health:
 
 ```bash
-cd backend
-npm test -- --runInBand
+curl http://localhost:5000/health
+```
+
+Match:
+
+```bash
+curl -X POST http://localhost:5000/api/match \
+  -H "Content-Type: application/json" \
+  -d "{\"jobTitle\":\"Backend Developer\",\"companyName\":\"TestCo\",\"jobDescription\":\"Looking for Node.js, Express, REST API, Docker, AWS experience.\"}"
 ```

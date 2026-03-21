@@ -6,8 +6,7 @@ require('dotenv').config();
 const requiredEnvVars = [
   'FIREBASE_PROJECT_ID',
   'FIREBASE_CLIENT_EMAIL',
-  'FIREBASE_PRIVATE_KEY',
-  'AI_ENGINE_URL'
+  'FIREBASE_PRIVATE_KEY'
 ];
 
 const validateEnv = () => {
@@ -29,6 +28,7 @@ module.exports = {
   FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
   FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
   FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,
-  AI_ENGINE_URL: process.env.AI_ENGINE_URL || 'http://localhost:8000',
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
+  GROQ_MODEL: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
 };

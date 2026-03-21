@@ -11,7 +11,7 @@ const { checkAIHealth } = require('../services/aiService');
  */
 router.get('/', async (req, res) => {
   try {
-    // Check AI engine health
+    // Check AI provider health
     let aiHealth = null;
     try {
       aiHealth = await checkAIHealth();
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
       status: 'OK',
       timestamp: new Date().toISOString(),
       service: 'backend-api',
-      aiEngine: aiHealth,
+      aiProvider: aiHealth,
     });
   } catch (error) {
     res.status(500).json({
