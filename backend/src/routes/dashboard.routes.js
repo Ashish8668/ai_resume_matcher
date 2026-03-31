@@ -38,6 +38,9 @@ router.get('/analytics', async (req, res) => {
       preview: chunk.preview,
     }));
     const isSectionBased = chunks.some((chunk) => chunk.strategy === 'section');
+    const sectionLabels = isSectionBased
+      ? [...new Set(chunks.map((chunk) => chunk.section).filter(Boolean))]
+      : [];
 
     const latestAnalysis = await getLatestAnalysisSession();
 
@@ -52,7 +55,7 @@ router.get('/analytics', async (req, res) => {
         },
         chunking: {
           strategy: isSectionBased ? 'section' : 'word_window',
-          sectionLabels: isSectionBased ? ['Summary', 'Education', 'Experience', 'Projects', 'Achievements', 'Certifications'] : [],
+          sectionLabels,
           chunkSizeWords: isSectionBased ? null : 180,
           overlapWords: isSectionBased ? null : 30,
           chunkCount: chunks.length,

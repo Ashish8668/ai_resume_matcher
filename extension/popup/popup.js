@@ -125,7 +125,7 @@ function displayMatchResults(result) {
   let html = `
     <div class="match-score">
       <div class="score-value">${match.atsScore || 0}%</div>
-      <div class="score-label">ATS Match Score</div>
+      <div class="score-label">Score</div>
     </div>
   `;
   

@@ -321,7 +321,7 @@
           analysisMetaEl.textContent = 'No analysis run found yet. Trigger /api/match once after uploading a resume.';
           stageBarsEl.innerHTML = '';
           renderMetricCards(matchMetricsEl, [
-            { label: 'ATS Score', value: '-' },
+            { label: 'Score', value: '-' },
             { label: 'Similarity', value: '-' },
             { label: 'Gap Score', value: '-' },
             { label: 'Project Ideas', value: '-' },
@@ -348,7 +348,7 @@
 
         const result = analysis.resultSnapshot || {};
         renderMetricCards(matchMetricsEl, [
-          { label: 'ATS Score', value: result.atsScore ?? '-' },
+          { label: 'Score', value: result.atsScore ?? '-' },
           { label: 'Similarity', value: result.similarityScore ?? '-' },
           { label: 'Gap Score', value: result.missingSkills ? (result.missingSkills.length / Math.max((result.missingSkills.length + (result.matchedSkills || []).length), 1)).toFixed(2) : '-' },
           { label: 'Project Ideas', value: (result.projectIdeas || []).length },
